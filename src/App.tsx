@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, Pause, RotateCcw, Coffee, Briefcase, Moon, BellRing, Settings, X, Check, Volume2, Sun } from 'lucide-react';
+import { Play, Pause, RotateCcw, Coffee, Briefcase, Moon, BellRing, Settings, X, Check, Volume2, Sun, Sparkles, Wind, Waves as WavesIcon } from 'lucide-react';
 
 type Mode = 'work' | 'shortBreak' | 'longBreak';
+type AnimationTheme = 'orbs' | 'bubbles' | 'waves';
 
 const DEFAULT_DURATIONS: Record<Mode, number> = {
   work: 25,
@@ -16,6 +17,12 @@ const MODES: Record<Mode, { label: string; icon: any }> = {
   longBreak: { label: 'Long Break', icon: Moon },
 };
 
+const ANIMATION_THEMES: { id: AnimationTheme; label: string; icon: any }[] = [
+  { id: 'orbs', label: 'Floating Orbs', icon: Wind },
+  { id: 'bubbles', label: 'Gentle Bubbles', icon: Sparkles },
+  { id: 'waves', label: 'Flowing Waves', icon: WavesIcon },
+];
+
 const NOTIFICATION_SOUNDS = [
   { id: 'bell', label: 'Classic Bell', url: 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3' },
   { id: 'chime', label: 'Soft Chime', url: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3' },
@@ -23,64 +30,117 @@ const NOTIFICATION_SOUNDS = [
   { id: 'pulse', label: 'Minimal Pulse', url: 'https://assets.mixkit.co/active_storage/sfx/1003/1003-preview.mp3' },
 ];
 
-function CalmingBackground({ isActive, progress }: { isActive: boolean; progress: number }) {
+function Orbs({ isActive }: { isActive: boolean }) {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {/* Primary Orb */}
+    <>
       <motion.div
         animate={{
           x: isActive ? [0, 100, -100, 0] : [0, 30, -30, 0],
           y: isActive ? [10, -50, 50, 10] : [10, -10, 10, 10],
           scale: isActive ? [1.1, 1.4, 0.8, 1.1] : [1.1, 1.15, 1.05, 1.1],
         }}
-        transition={{
-          duration: isActive ? 15 : 25,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
+        transition={{ duration: isActive ? 15 : 25, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-[-10%] left-[-10%] w-[100%] h-[100%] opacity-[0.35] dark:opacity-[0.2] blur-[80px] rounded-full bg-primary-container"
       />
-
-      {/* Secondary Orb */}
       <motion.div
         animate={{
           x: isActive ? [0, -120, 80, 0] : [0, -40, 40, 0],
           y: isActive ? [0, 80, -40, 0] : [0, 20, -20, 0],
           scale: isActive ? [1, 0.7, 1.2, 1] : [1, 0.9, 1.1, 1],
         }}
-        transition={{
-          duration: isActive ? 18 : 30,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1
-        }}
+        transition={{ duration: isActive ? 18 : 30, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         className="absolute bottom-[-15%] right-[-10%] w-[100%] h-[100%] opacity-[0.3] dark:opacity-[0.18] blur-[100px] rounded-full bg-secondary-container"
       />
-
-      {/* Tertiary Orb (Center Breathing) */}
       <motion.div
         animate={{
           scale: isActive ? [1, 1.3, 1] : [1, 1.05, 1],
           opacity: isActive ? [0.2, 0.4, 0.2] : [0.15, 0.2, 0.15],
         }}
-        transition={{
-          duration: isActive ? 4 : 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
+        transition={{ duration: isActive ? 4 : 8, repeat: Infinity, ease: "easeInOut" }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-[120px] rounded-full bg-tertiary-container"
       />
+    </>
+  );
+}
+
+function Bubbles({ isActive }: { isActive: boolean }) {
+  const bubbles = Array.from({ length: 12 });
+  return (
+    <div className="absolute inset-0">
+      {bubbles.map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ y: "110%", x: `${Math.random() * 100}%`, scale: Math.random() * 0.5 + 0.5, opacity: 0 }}
+          animate={{
+            y: "-10%",
+            opacity: [0, 0.4, 0],
+            x: [`${Math.random() * 100}%`, `${Math.random() * 100}%`]
+          }}
+          transition={{
+            duration: isActive ? Math.random() * 10 + 5 : Math.random() * 15 + 10,
+            repeat: Infinity,
+            delay: Math.random() * 10,
+            ease: "easeInOut"
+          }}
+          className="absolute w-24 h-24 rounded-full bg-primary-container/40 blur-xl"
+          style={{ backgroundColor: i % 2 === 0 ? 'var(--color-primary-container)' : 'var(--color-secondary-container)' }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function Waves({ isActive }: { isActive: boolean }) {
+  return (
+    <div className="absolute inset-0 flex flex-col justify-end">
+      {[1, 2, 3].map((layer) => (
+        <motion.div
+          key={layer}
+          animate={{
+            x: ["-50%", "0%", "-50%"],
+            scaleY: isActive ? [1, 1.2, 1] : [1, 1.05, 1],
+            y: isActive ? [0, -20, 0] : [0, -5, 0],
+          }}
+          transition={{
+            duration: (10 + layer * 5) / (isActive ? 1.5 : 1),
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute bottom-0 left-[-100%] w-[300%] h-[40vh] opacity-[0.15] dark:opacity-[0.1] blur-3xl"
+          style={{
+            backgroundColor: layer === 1 ? 'var(--color-primary-container)' : layer === 2 ? 'var(--color-secondary-container)' : 'var(--color-tertiary-container)',
+            borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%",
+            zIndex: -layer,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function CalmingBackground({ isActive, progress, theme }: { isActive: boolean; progress: number; theme: AnimationTheme }) {
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-surface transition-colors duration-700">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={theme}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0"
+        >
+          {theme === 'orbs' && <Orbs isActive={isActive} />}
+          {theme === 'bubbles' && <Bubbles isActive={isActive} />}
+          {theme === 'waves' && <Waves isActive={isActive} />}
+        </motion.div>
+      </AnimatePresence>
 
       {/* High-frequency subtle shimmer */}
       {isActive && (
         <motion.div
-          animate={{
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 0.1,
-            repeat: Infinity,
-          }}
+          animate={{ opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 0.1, repeat: Infinity }}
           className="absolute inset-0 bg-primary/5 mix-blend-overlay"
         />
       )}
@@ -110,6 +170,10 @@ export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('pulse-dark-mode') === 'true';
   });
+  const [animationTheme, setAnimationTheme] = useState<AnimationTheme>(() => {
+    return (localStorage.getItem('pulse-animation-theme') as AnimationTheme) || 'orbs';
+  });
+  const [tempAnimationTheme, setTempAnimationTheme] = useState(animationTheme);
   const [selectedSoundId, setSelectedSoundId] = useState(() => {
     return localStorage.getItem('pulse-sound') || 'bell';
   });
@@ -187,6 +251,8 @@ export default function App() {
   const saveSettings = () => {
     setDurations(tempDurations);
     setSelectedSoundId(tempSoundId);
+    setAnimationTheme(tempAnimationTheme);
+    localStorage.setItem('pulse-animation-theme', tempAnimationTheme);
     setIsSettingsOpen(false);
   };
 
@@ -201,7 +267,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative flex flex-col items-center justify-between p-8 bg-surface text-on-surface transition-colors duration-700 overflow-hidden">
-      <CalmingBackground isActive={isActive} progress={progress} />
+      <CalmingBackground isActive={isActive} progress={progress} theme={animationTheme} />
 
       {/* Header / Mode Selection */}
       <header className="w-full max-w-md flex flex-col items-center gap-6 mt-4 relative z-20">
@@ -426,6 +492,35 @@ export default function App() {
                       />
                     </div>
                   ))}
+                </div>
+
+                {/* Ambient Mode Section */}
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+                    <Sparkles size={14} /> Ambient Theme
+                  </h3>
+                  <div className="grid grid-cols-1 gap-2">
+                    {ANIMATION_THEMES.map((theme) => {
+                      const Icon = theme.icon;
+                      return (
+                        <button
+                          key={theme.id}
+                          onClick={() => setTempAnimationTheme(theme.id)}
+                          className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all duration-200 ${
+                            tempAnimationTheme === theme.id 
+                              ? 'border-primary bg-primary-container text-on-primary-container font-semibold' 
+                              : 'border-outline/10 bg-surface-variant/20 text-on-surface-variant'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Icon size={18} />
+                            <span>{theme.label}</span>
+                          </div>
+                          {tempAnimationTheme === theme.id && <Check size={18} />}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Sounds Section */}
