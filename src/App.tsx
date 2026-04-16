@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, Pause, RotateCcw, Coffee, Briefcase, Moon, BellRing, Settings, X, Check, Volume2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Coffee, Briefcase, Moon, BellRing, Settings, X, Check, Volume2, Sun } from 'lucide-react';
 
 type Mode = 'work' | 'shortBreak' | 'longBreak';
 
@@ -65,6 +65,9 @@ export default function App() {
   const [sessionsCompleted, setSessionsCompleted] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [tempDurations, setTempDurations] = useState(durations);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('pulse-dark-mode') === 'true';
+  });
   const [selectedSoundId, setSelectedSoundId] = useState(() => {
     return localStorage.getItem('pulse-sound') || 'bell';
   });
@@ -86,6 +89,15 @@ export default function App() {
       localStorage.setItem('pulse-sound', selectedSoundId);
     }
   }, [selectedSoundId]);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('pulse-dark-mode', isDarkMode.toString());
+  }, [isDarkMode]);
 
   useEffect(() => {
     let interval: number | undefined;
@@ -152,7 +164,13 @@ export default function App() {
       {/* Header / Mode Selection */}
       <header className="w-full max-w-md flex flex-col items-center gap-6 mt-4 relative z-10">
         <div className="w-full flex justify-between items-center px-4">
-          <div className="w-10 h-10" /> {/* Spacer */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="p-2 rounded-full hover:bg-surface-variant/50 transition-colors"
+            title={isDarkMode ? "Light Mode" : "Dark Mode"}
+          >
+            {isDarkMode ? <Sun size={24} className="text-on-surface-variant" /> : <Moon size={24} className="text-on-surface-variant" />}
+          </button>
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}

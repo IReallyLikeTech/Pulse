@@ -36,6 +36,31 @@
 }
 
 @layer base {
+  .dark {
+    --color-primary: #9cd67e;
+    --color-on-primary: #0f3900;
+    --color-primary-container: #205107;
+    --color-on-primary-container: #b8f397;
+
+    --color-secondary: #bdcbb1;
+    --color-on-secondary: #273421;
+    --color-secondary-container: #3d4a37;
+    --color-on-secondary-container: #d9e7cb;
+
+    --color-tertiary: #a0cfcf;
+    --color-on-tertiary: #003738;
+    --color-tertiary-container: #1e4e4e;
+    --color-on-tertiary-container: #bbebeb;
+
+    --color-background: #11140e;
+    --color-on-background: #e3e3dc;
+    --color-surface: #11140e;
+    --color-on-surface: #e3e3dc;
+    --color-surface-variant: #43483f;
+    --color-on-surface-variant: #c3c8bc;
+    --color-outline: #8d9287;
+  }
+
   body {
     @apply bg-background text-on-background antialiased transition-colors duration-500;
   }
