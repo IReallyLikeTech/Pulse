@@ -25,27 +25,69 @@ const NOTIFICATION_SOUNDS = [
 
 function CalmingBackground({ isActive, progress }: { isActive: boolean; progress: number }) {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {/* Primary Orb */}
       <motion.div
         animate={{
-          scale: isActive ? [1, 1.1, 1] : 1,
-          rotate: isActive ? [0, 5, -5, 0] : 0,
+          x: isActive ? [0, 100, -100, 0] : [0, 30, -30, 0],
+          y: isActive ? [10, -50, 50, 10] : [10, -10, 10, 10],
+          scale: isActive ? [1.1, 1.4, 0.8, 1.1] : [1.1, 1.15, 1.05, 1.1],
         }}
         transition={{
-          duration: 20,
+          duration: isActive ? 15 : 25,
           repeat: Infinity,
-          ease: "linear"
+          ease: "easeInOut"
         }}
-        className="absolute -top-1/4 -left-1/4 w-[150%] h-[150%] opacity-30 blur-[120px]"
-        style={{
-          background: `radial-gradient(circle at 50% 50%, var(--color-primary-container) 0%, transparent 50%),
-                       radial-gradient(circle at 20% 80%, var(--color-secondary-container) 0%, transparent 50%),
-                       radial-gradient(circle at 80% 20%, var(--color-tertiary-container) 0%, transparent 50%)`
-        }}
+        className="absolute top-[-10%] left-[-10%] w-[100%] h-[100%] opacity-[0.35] dark:opacity-[0.2] blur-[80px] rounded-full bg-primary-container"
       />
+
+      {/* Secondary Orb */}
+      <motion.div
+        animate={{
+          x: isActive ? [0, -120, 80, 0] : [0, -40, 40, 0],
+          y: isActive ? [0, 80, -40, 0] : [0, 20, -20, 0],
+          scale: isActive ? [1, 0.7, 1.2, 1] : [1, 0.9, 1.1, 1],
+        }}
+        transition={{
+          duration: isActive ? 18 : 30,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1
+        }}
+        className="absolute bottom-[-15%] right-[-10%] w-[100%] h-[100%] opacity-[0.3] dark:opacity-[0.18] blur-[100px] rounded-full bg-secondary-container"
+      />
+
+      {/* Tertiary Orb (Center Breathing) */}
+      <motion.div
+        animate={{
+          scale: isActive ? [1, 1.3, 1] : [1, 1.05, 1],
+          opacity: isActive ? [0.2, 0.4, 0.2] : [0.15, 0.2, 0.15],
+        }}
+        transition={{
+          duration: isActive ? 4 : 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-[120px] rounded-full bg-tertiary-container"
+      />
+
+      {/* High-frequency subtle shimmer */}
+      {isActive && (
+        <motion.div
+          animate={{
+            opacity: [0.1, 0.2, 0.1],
+          }}
+          transition={{
+            duration: 0.1,
+            repeat: Infinity,
+          }}
+          className="absolute inset-0 bg-primary/5 mix-blend-overlay"
+        />
+      )}
+
       {/* Dynamic progress bar subtle background */}
       <motion.div 
-        className="absolute bottom-0 left-0 h-1 bg-primary/10"
+        className="absolute bottom-0 left-0 h-1.5 bg-primary/30"
         initial={{ width: 0 }}
         animate={{ width: `${100 - progress}%` }}
         transition={{ duration: 1, ease: "linear" }}
@@ -162,7 +204,7 @@ export default function App() {
       <CalmingBackground isActive={isActive} progress={progress} />
 
       {/* Header / Mode Selection */}
-      <header className="w-full max-w-md flex flex-col items-center gap-6 mt-4 relative z-10">
+      <header className="w-full max-w-md flex flex-col items-center gap-6 mt-4 relative z-20">
         <div className="w-full flex justify-between items-center px-4">
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -219,7 +261,7 @@ export default function App() {
       </header>
 
       {/* Main Timer Display */}
-      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md gap-8 md:gap-12">
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-md gap-8 md:gap-12 relative z-20">
         <div className="relative flex items-center justify-center w-64 h-64 xs:w-72 xs:h-72 md:w-80 md:h-80">
           {/* Circular Progress Container */}
           <svg className="w-full h-full transform -rotate-90">
