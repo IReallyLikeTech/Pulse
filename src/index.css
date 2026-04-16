@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Bold Typography Theme Palette */
+  --color-primary: #376a1f;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #b8f397;
+  --color-on-primary-container: #042100;
+
+  --color-secondary: #54624d;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #dce5d5;
+  --color-on-secondary-container: #151e13;
+
+  --color-tertiary: #386667;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #bbebeb;
+  --color-on-tertiary-container: #002021;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+
+  --color-background: #f7f9f2;
+  --color-on-background: #191c18;
+  --color-surface: #f7f9f2;
+  --color-on-surface: #191c18;
+  --color-surface-variant: #dfe4d7;
+  --color-on-surface-variant: #43483f;
+  --color-outline: #72796f;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-background antialiased transition-colors duration-500;
+  }
+}
